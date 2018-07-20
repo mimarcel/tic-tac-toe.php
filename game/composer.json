@@ -1,6 +1,9 @@
 {
-    "name": "maxlongint/tic-tac-toe.php",
-    "require": {
-        "phpunit/phpunit": "^7.2"
-    }
+  "name": "maxlongint/tic-tac-toe.php",
+  "scripts": {
+    "test": "php ./vendor/phpunit/phpunit"
+  },
+  "require": {
+    "phpunit/phpunit": "^7.2"
+  }
 }
