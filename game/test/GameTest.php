@@ -45,11 +45,12 @@ class GameTest extends \PHPUnit\Framework\TestCase
     /**
      * @param $marks
      * @param $expectedGridView
-     * @param $expectedGameStatusWait
+     * @param $expectedGameStatus
+     * @param $expectedGameWinner
      *
      * @dataProvider providerPlay
      */
-    public function testPlay($marks, $expectedGridView, $expectedGameStatusWait)
+    public function testPlay($marks, $expectedGridView, $expectedGameStatus, $expectedGameWinner)
     {
         $this->_connectPlayers(2);
 
@@ -58,7 +59,8 @@ class GameTest extends \PHPUnit\Framework\TestCase
         }
 
         $this->assertEquals($expectedGridView, $this->game->getCurrentGridView());
-        $this->assertEquals($expectedGameStatusWait, $this->game->getGameStatus());
+        $this->assertEquals($expectedGameStatus, $this->game->getGameStatus());
+        $this->assertEquals($expectedGameWinner, $this->game->getGameWinner());
     }
 
     public function testPlayWithNotEnoughPlayers()
@@ -104,12 +106,13 @@ class GameTest extends \PHPUnit\Framework\TestCase
     public function providerPlay()
     {
         return [
-            [[], "         ", \Max\TicTacToe\Game::GAME_STATUS_IN_PROGRESS],
-            [[[0, 0]], "X        ", \Max\TicTacToe\Game::GAME_STATUS_IN_PROGRESS],
-            [[[0, 0], [0, 1]], "X0       ", \Max\TicTacToe\Game::GAME_STATUS_IN_PROGRESS],
-            [[[0, 0], [0, 1], [0, 2]], "X0X      ", \Max\TicTacToe\Game::GAME_STATUS_IN_PROGRESS],
-            [[[0, 0], [1, 0], [0, 1], [1, 1]], "XX 00    ", \Max\TicTacToe\Game::GAME_STATUS_IN_PROGRESS],
-            [[[0, 0], [1, 0], [0, 1], [1, 1], [0, 2]], "XXX00    ", \Max\TicTacToe\Game::GAME_STATUS_OVER],
+            [[], "         ", \Max\TicTacToe\Game::GAME_STATUS_IN_PROGRESS, \Max\TicTacToe\Game\Grid::MARK_EMPTY],
+            [[[0, 0]], "X        ", \Max\TicTacToe\Game::GAME_STATUS_IN_PROGRESS, \Max\TicTacToe\Game\Grid::MARK_EMPTY],
+            [[[0, 0], [0, 1]], "X0       ", \Max\TicTacToe\Game::GAME_STATUS_IN_PROGRESS, \Max\TicTacToe\Game\Grid::MARK_EMPTY],
+            [[[0, 0], [0, 1], [0, 2]], "X0X      ", \Max\TicTacToe\Game::GAME_STATUS_IN_PROGRESS, \Max\TicTacToe\Game\Grid::MARK_EMPTY],
+            [[[0, 0], [1, 0], [0, 1], [1, 1]], "XX 00    ", \Max\TicTacToe\Game::GAME_STATUS_IN_PROGRESS, \Max\TicTacToe\Game\Grid::MARK_EMPTY],
+            [[[0, 0], [1, 0], [0, 1], [1, 1], [0, 2]], "XXX00    ", \Max\TicTacToe\Game::GAME_STATUS_OVER, \Max\TicTacToe\Game\Grid::MARK_X],
+            [[[0, 0], [0, 1], [0, 2], [1, 1], [1, 0], [1, 2], [2, 1], [2, 0], [2, 2]], "X0XX000XX", \Max\TicTacToe\Game::GAME_STATUS_OVER, \Max\TicTacToe\Game\Grid::MARK_EMPTY],
         ];
     }
 
