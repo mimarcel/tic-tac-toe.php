@@ -59,6 +59,22 @@ class GameTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedGridView, $this->game->getCurrentGridView());
     }
 
+    public function testPlayWithNotEnoughPlayers()
+    {
+        for ($playersCount = 0; $playersCount < 2; $playersCount++) {
+            $this->_connectPlayers($playersCount);
+
+            try {
+                $this->game->mark(0 ,0);
+            } catch (\Max\TicTacToe\Exception $exception) {
+                $this->assertEquals('Game is not in progress.', $exception->getMessage());
+                continue;
+            }
+
+            $this->fail('Expected exception but nothing thrown.');
+        }
+    }
+
     public function providerConnectPlayers()
     {
         return [

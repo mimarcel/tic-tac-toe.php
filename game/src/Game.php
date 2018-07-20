@@ -41,5 +41,8 @@ class Game
 
     public function mark($x, $y)
     {
+        if ($this->gameStatus !== self::GAME_STATUS_IN_PROGRESS) {
+            throw new \Max\TicTacToe\Exception('Game is not in progress.');
+        }
     }
 }
