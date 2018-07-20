@@ -21,7 +21,7 @@ class Game
         if ($this->player1 === null) {
             $this->player1 = $player;
         } elseif ($this->player2 === null) {
-            $this->player2 = null;
+            $this->player2 = $player;
             $this->gameStatus = self::GAME_STATUS_IN_PROGRESS;
         } else {
             throw new \Max\TicTacToe\Exception('Unable to connect more than 2 players in the game.');
