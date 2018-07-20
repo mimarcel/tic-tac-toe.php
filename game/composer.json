@@ -1,0 +1,6 @@
+{
+    "name": "maxlongint/tic-tac-toe.php",
+    "require": {
+        "phpunit/phpunit": "^7.2"
+    }
+}

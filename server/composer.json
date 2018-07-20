@@ -1,4 +1,9 @@
 {
-    "name": "maxlongint/tic-tac-toe.php",
-    "require": {}
+    "name": "maxlongint/tic-tac-toe-server.php",
+    "require": {
+        "cboden/ratchet": "^0.4.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.2"
+    }
 }
