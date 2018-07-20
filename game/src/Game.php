@@ -36,10 +36,6 @@ class Game
         if ($this->gameStatus !== self::GAME_STATUS_IN_PROGRESS) {
             throw new \Max\TicTacToe\Exception('Game is not in progress.');
         }
-        if ($this->grid->getMark($x, $y) !== \Max\TicTacToe\Game\Grid::MARK_EMPTY) {
-            throw new \Max\TicTacToe\Exception('Position is already marked.');
-        }
-
         $this->grid->setMark($x, $y, $this->currentMark);
 
         $this->_checkGameOver();
@@ -83,39 +79,17 @@ class Game
 
     protected function _checkGameOverWin()
     {
-        $winRows = [
-            [[0, 0], [1, 1], [2, 2]],
-            [[0, 2], [1, 1], [2, 0]],
-        ];
-        for ($i = 0; $i < 3; $i++) {
-            $winRows[] = [[$i, 0], [$i, 1], [$i, 2]];
-            $winRows[] = [[0, $i], [1, $i], [2, $i]];
-        }
+        $winner = $this->grid->checkWinner();
 
-        foreach ($winRows as $winRow) {
-            $mark = $this->grid->getMark($winRow[0][0], $winRow[0][1]);
-            if ($mark !== \Max\TicTacToe\Game\Grid::MARK_EMPTY
-                && $mark == $this->grid->getMark($winRow[1][0], $winRow[1][1])
-                && $mark == $this->grid->getMark($winRow[2][0], $winRow[2][1])) {
-                $this->gameStatus = self::GAME_STATUS_OVER;
-                $this->gameWinner = $mark;
-                break;
-            }
+        if ($winner !== null) {
+            $this->gameStatus = self::GAME_STATUS_OVER;
+            $this->gameWinner = $winner;
         }
     }
 
     protected function _checkGameOverTie()
     {
-        $tie = true;
-        for ($i = 0; $i < 3; $i++) {
-            for ($j = 0; $j < 3; $j++) {
-                if ($this->grid->getMark($i, $j) === \Max\TicTacToe\Game\Grid::MARK_EMPTY) {
-                    $tie = false;
-                    break 2;
-                }
-            }
-        }
-        if ($tie) {
+        if ($this->grid->checkTie()) {
             $this->gameStatus = self::GAME_STATUS_OVER;
         }
     }
