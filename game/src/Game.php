@@ -8,6 +8,7 @@ class Game
     const GAME_STATUS_OVER = 'game over';
 
     protected $gameStatus = self::GAME_STATUS_WAIT;
+    protected $gameWinner = \Max\TicTacToe\Game\Grid::MARK_EMPTY;
     protected $player1 = null;
     protected $player2 = null;
     protected $grid;
@@ -16,11 +17,6 @@ class Game
     public function __construct()
     {
         $this->grid = new \Max\TicTacToe\Game\Grid();
-    }
-
-    public function getGameStatus()
-    {
-        return $this->gameStatus;
     }
 
     public function connectPlayer($player)
@@ -33,11 +29,6 @@ class Game
         } else {
             throw new \Max\TicTacToe\Exception('Unable to connect more than 2 players in the game.');
         }
-    }
-
-    public function getCurrentGridView()
-    {
-        return $this->grid->__toString();
     }
 
     public function mark($x, $y)
@@ -57,7 +48,40 @@ class Game
         return $this->getGameStatus();
     }
 
+    public function getCurrentGridView()
+    {
+        return $this->grid->__toString();
+    }
+
+    public function getCurrentMark()
+    {
+        return $this->currentMark;
+    }
+
+    public function getGameStatus()
+    {
+        return $this->gameStatus;
+    }
+
+    public function getGameWinner()
+    {
+        return $this->gameWinner;
+    }
+
+    public function getPlayers()
+    {
+        return [$this->player1, $this->player2];
+    }
+
     protected function _checkGameOver()
+    {
+        $this->_checkGameOverWin();
+        if ($this->getGameStatus() !== \Max\TicTacToe\Game::GAME_STATUS_OVER) {
+            $this->_checkGameOverTie();
+        }
+    }
+
+    protected function _checkGameOverWin()
     {
         $winRows = [
             [[0, 0], [1, 1], [2, 2]],
@@ -74,11 +98,26 @@ class Game
                 && $mark == $this->grid->getMark($winRow[1][0], $winRow[1][1])
                 && $mark == $this->grid->getMark($winRow[2][0], $winRow[2][1])) {
                 $this->gameStatus = self::GAME_STATUS_OVER;
+                $this->gameWinner = $mark;
                 break;
             }
         }
+    }
 
-        return $this->gameStatus;
+    protected function _checkGameOverTie()
+    {
+        $tie = true;
+        for ($i = 0; $i < 3; $i++) {
+            for ($j = 0; $j < 3; $j++) {
+                if ($this->grid->getMark($i, $j) === \Max\TicTacToe\Game\Grid::MARK_EMPTY) {
+                    $tie = false;
+                    break 2;
+                }
+            }
+        }
+        if ($tie) {
+            $this->gameStatus = self::GAME_STATUS_OVER;
+        }
     }
 
     protected function _changeCurrentMark()

@@ -5,7 +5,6 @@ function requireFile($path) {
     require_once TESTS_BASE . DIRECTORY_SEPARATOR . "../" . $path;
 }
 
-requireFile('src/GameManager.php');
 requireFile('src/Game.php');
 requireFile('src/Game/Grid.php');
 requireFile('src/Player.php');
