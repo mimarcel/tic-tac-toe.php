@@ -18,15 +18,15 @@ class GameTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @param $playersCount
-     * @param $expectedGameStatusWait
+     * @param $expectedGameStatus
      *
      * @dataProvider providerConnectPlayers
      */
-    public function testConnectPlayers($playersCount, $expectedGameStatusWait)
+    public function testConnectPlayers($playersCount, $expectedGameStatus)
     {
         $this->_connectPlayers($playersCount);
 
-        $this->assertEquals($expectedGameStatusWait, $this->game->getGameStatus());
+        $this->assertEquals($expectedGameStatus, $this->game->getGameStatus());
     }
 
     public function testConnect3Players()
