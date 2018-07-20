@@ -3,9 +3,9 @@ namespace Max\TicTacToe;
 
 class Game
 {
-    const GAME_STATUS_WAIT = 0;
-    const GAME_STATUS_IN_PROGRESS = 1;
-    const GAME_STATUS_OVER = 2;
+    const GAME_STATUS_WAIT = 'wait';
+    const GAME_STATUS_IN_PROGRESS = 'in progress';
+    const GAME_STATUS_OVER = 'game over';
 
     protected $gameStatus = self::GAME_STATUS_WAIT;
     protected $player1 = null;
@@ -18,7 +18,7 @@ class Game
         $this->grid = new \Max\TicTacToe\Game\Grid();
     }
 
-    public function check()
+    public function getGameStatus()
     {
         return $this->gameStatus;
     }
@@ -51,7 +51,34 @@ class Game
 
         $this->grid->setMark($x, $y, $this->currentMark);
 
+        $this->_checkGameOver();
         $this->_changeCurrentMark();
+
+        return $this->getGameStatus();
+    }
+
+    protected function _checkGameOver()
+    {
+        $winRows = [
+            [[0, 0], [1, 1], [2, 2]],
+            [[0, 2], [1, 1], [2, 0]],
+        ];
+        for ($i = 0; $i < 3; $i++) {
+            $winRows[] = [[$i, 0], [$i, 1], [$i, 2]];
+            $winRows[] = [[0, $i], [1, $i], [2, $i]];
+        }
+
+        foreach ($winRows as $winRow) {
+            $mark = $this->grid->getMark($winRow[0][0], $winRow[0][1]);
+            if ($mark !== \Max\TicTacToe\Game\Grid::MARK_EMPTY
+                && $mark == $this->grid->getMark($winRow[1][0], $winRow[1][1])
+                && $mark == $this->grid->getMark($winRow[2][0], $winRow[2][1])) {
+                $this->gameStatus = self::GAME_STATUS_OVER;
+                break;
+            }
+        }
+
+        return $this->gameStatus;
     }
 
     protected function _changeCurrentMark()

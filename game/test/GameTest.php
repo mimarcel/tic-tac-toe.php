@@ -26,7 +26,7 @@ class GameTest extends \PHPUnit\Framework\TestCase
     {
         $this->_connectPlayers($playersCount);
 
-        $this->assertTrue($this->game->check() == $expectedGameStatusWait);
+        $this->assertEquals($expectedGameStatusWait, $this->game->getGameStatus());
     }
 
     public function testConnect3Players()
@@ -45,10 +45,11 @@ class GameTest extends \PHPUnit\Framework\TestCase
     /**
      * @param $marks
      * @param $expectedGridView
+     * @param $expectedGameStatusWait
      *
      * @dataProvider providerPlay
      */
-    public function testPlay($marks, $expectedGridView)
+    public function testPlay($marks, $expectedGridView, $expectedGameStatusWait)
     {
         $this->_connectPlayers(2);
 
@@ -57,6 +58,7 @@ class GameTest extends \PHPUnit\Framework\TestCase
         }
 
         $this->assertEquals($expectedGridView, $this->game->getCurrentGridView());
+        $this->assertEquals($expectedGameStatusWait, $this->game->getGameStatus());
     }
 
     public function testPlayWithNotEnoughPlayers()
@@ -102,10 +104,12 @@ class GameTest extends \PHPUnit\Framework\TestCase
     public function providerPlay()
     {
         return [
-            [[], "         "],
-            [[[0, 0]], "X        "],
-            [[[0, 0], [0, 1]], "X0       "],
-            [[[0, 0], [0, 1], [0, 2]], "X0X      "],
+            [[], "         ", \Max\TicTacToe\Game::GAME_STATUS_IN_PROGRESS],
+            [[[0, 0]], "X        ", \Max\TicTacToe\Game::GAME_STATUS_IN_PROGRESS],
+            [[[0, 0], [0, 1]], "X0       ", \Max\TicTacToe\Game::GAME_STATUS_IN_PROGRESS],
+            [[[0, 0], [0, 1], [0, 2]], "X0X      ", \Max\TicTacToe\Game::GAME_STATUS_IN_PROGRESS],
+            [[[0, 0], [1, 0], [0, 1], [1, 1]], "XX 00    ", \Max\TicTacToe\Game::GAME_STATUS_IN_PROGRESS],
+            [[[0, 0], [1, 0], [0, 1], [1, 1], [0, 2]], "XXX00    ", \Max\TicTacToe\Game::GAME_STATUS_OVER],
         ];
     }
 
