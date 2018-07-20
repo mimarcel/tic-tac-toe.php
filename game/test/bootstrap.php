@@ -7,5 +7,6 @@ function requireFile($path) {
 
 requireFile('src/GameManager.php');
 requireFile('src/Game.php');
+requireFile('src/Game/Grid.php');
 requireFile('src/Player.php');
 requireFile('src/Exception.php');

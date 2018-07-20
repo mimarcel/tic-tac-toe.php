@@ -10,6 +10,12 @@ class Game
     protected $gameStatus = self::GAME_STATUS_WAIT;
     protected $player1 = null;
     protected $player2 = null;
+    protected $grid;
+
+    public function __construct()
+    {
+        $this->grid = new \Max\TicTacToe\Game\Grid();
+    }
 
     public function check()
     {
@@ -26,5 +32,14 @@ class Game
         } else {
             throw new \Max\TicTacToe\Exception('Unable to connect more than 2 players in the game.');
         }
+    }
+
+    public function getCurrentGridView()
+    {
+        return $this->grid->__toString();
+    }
+
+    public function mark($x, $y)
+    {
     }
 }
