@@ -7,26 +7,34 @@ class Server implements \Ratchet\MessageComponentInterface {
     const MESSAGE_ACTION_CONNECT = 'connect';
     const MESSAGE_ACTION_MARK = 'mark';
 
+    /** @var Server\Logger */
+    protected $logger;
+    /** @var Server\Game[] */
     protected $games;
+    /** @var \SplObjectStorage */
     protected $clients;
 
-    public function __construct()
+    /**
+     * @param \Max\TicTacToe\Server\Logger $logger
+     */
+    public function __construct($logger)
     {
+        $this->logger = $logger;
         $this->games = [];
-        $this->clients = new \SplObjectStorage;
+        $this->clients = new \SplObjectStorage();
     }
     
     public function onOpen(\Ratchet\ConnectionInterface $connection)
     {
         $this->clients->attach($connection);
 
-        $this->_log("Connection open for client {$connection->resourceId}.");
+        $this->logger->log("Connection open for client {$connection->resourceId}.");
     }
 
     public function onMessage(\Ratchet\ConnectionInterface $from, $message)
     {
         $message = trim($message);
-        $this->_log("Receive message $message from client {$from->resourceId}.");
+        $this->logger->log("Receive message `$message` from client {$from->resourceId}.");
 
         $message = json_decode($message, true);
         $action = $message['action'] ?? self::MESSAGE_ACTION_NEW_NONE;
@@ -73,7 +81,7 @@ class Server implements \Ratchet\MessageComponentInterface {
         } catch (\Max\TicTacToe\Exception $exception) {
             $this->_sendMessage($from, ['message' => $exception->getMessage()]);
         } catch (\Exception $exception) {
-            $this->_log((string)$exception);
+            $this->logger->log((string)$exception);
             $this->_sendMessage($from, ['message' => 'An unexpected exception has occurred.']);
         }
     }
@@ -129,11 +137,6 @@ class Server implements \Ratchet\MessageComponentInterface {
         return null;
     }
 
-    protected function _log($message)
-    {
-        echo $message . "\n";
-    }
-
     /**
      * @param \Ratchet\ConnectionInterface $from
      * @param \Max\TicTacToe\Server\Game $game
@@ -170,7 +173,7 @@ class Server implements \Ratchet\MessageComponentInterface {
     {
         $message = json_encode($message);
 
-        $this->_log("Send message $message to client {$to->resourceId}.");
-        $to->send($message);
+        $this->logger->log("Send message `$message` to client {$to->resourceId}.");
+        $to->send($message . "\n");
     }
 }
