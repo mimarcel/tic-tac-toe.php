@@ -20,10 +20,32 @@ class Grid
             foreach ($row as $mark) {
                 $s .= $mark;
             }
-
-            $s .= "\n";
         }
 
         return $s;
+    }
+
+    public function setMark($x, $y, $mark)
+    {
+        $this->_checkPositions($x, $y);
+
+        $this->matrix[$x][$y] = $mark;
+    }
+
+    public function getMark($x, $y)
+    {
+        $this->_checkPositions($x, $y);
+
+        return $this->matrix[$x][$y];
+    }
+
+    private function _checkPositions($x, $y)
+    {
+        if ($x < 0 || $x > 2) {
+            throw new \Max\TicTacToe\Exception('Invalid position.');
+        }
+        if ($y < 0 || $y > 2) {
+            throw new \Max\TicTacToe\Exception('Invalid position.');
+        }
     }
 }

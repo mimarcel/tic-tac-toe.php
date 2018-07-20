@@ -11,6 +11,7 @@ class Game
     protected $player1 = null;
     protected $player2 = null;
     protected $grid;
+    protected $currentMark = \Max\TicTacToe\Game\Grid::MARK_X;
 
     public function __construct()
     {
@@ -43,6 +44,19 @@ class Game
     {
         if ($this->gameStatus !== self::GAME_STATUS_IN_PROGRESS) {
             throw new \Max\TicTacToe\Exception('Game is not in progress.');
+        }
+
+        $this->grid->setMark($x, $y, $this->currentMark);
+
+        $this->_changeCurrentMark();
+    }
+
+    protected function _changeCurrentMark()
+    {
+        if ($this->currentMark === \Max\TicTacToe\Game\Grid::MARK_X) {
+            $this->currentMark = \Max\TicTacToe\Game\Grid::MARK_0;
+        } else {
+            $this->currentMark = \Max\TicTacToe\Game\Grid::MARK_X;
         }
     }
 }

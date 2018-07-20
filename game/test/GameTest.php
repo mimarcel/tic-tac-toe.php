@@ -53,7 +53,7 @@ class GameTest extends \PHPUnit\Framework\TestCase
         $this->_connectPlayers(2);
 
         foreach ($marks as $mark) {
-            $this->game->mark($marks[0], $mark[1]);
+            $this->game->mark($mark[0], $mark[1]);
         }
 
         $this->assertEquals($expectedGridView, $this->game->getCurrentGridView());
@@ -87,7 +87,8 @@ class GameTest extends \PHPUnit\Framework\TestCase
     public function providerPlay()
     {
         return [
-            [[], "   \n   \n   \n"],
+            [[], "         "],
+            [[[0, 0]], "X        "],
         ];
     }
 
