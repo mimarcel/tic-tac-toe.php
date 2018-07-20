@@ -45,6 +45,9 @@ class Game
         if ($this->gameStatus !== self::GAME_STATUS_IN_PROGRESS) {
             throw new \Max\TicTacToe\Exception('Game is not in progress.');
         }
+        if ($this->grid->getMark($x, $y) !== \Max\TicTacToe\Game\Grid::MARK_EMPTY) {
+            throw new \Max\TicTacToe\Exception('Position is already marked.');
+        }
 
         $this->grid->setMark($x, $y, $this->currentMark);
 

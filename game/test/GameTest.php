@@ -75,6 +75,21 @@ class GameTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    public function testPlayMarkTheSamePosition()
+    {
+        $this->_connectPlayers(2);
+
+        try {
+            $this->game->mark(0 ,0);
+            $this->game->mark(0 ,0);
+        } catch (\Max\TicTacToe\Exception $exception) {
+            $this->assertEquals('Position is already marked.', $exception->getMessage());
+            return;
+        }
+
+        $this->fail('Expected exception but nothing thrown.');
+    }
+
     public function providerConnectPlayers()
     {
         return [
@@ -89,6 +104,8 @@ class GameTest extends \PHPUnit\Framework\TestCase
         return [
             [[], "         "],
             [[[0, 0]], "X        "],
+            [[[0, 0], [0, 1]], "X0       "],
+            [[[0, 0], [0, 1], [0, 2]], "X0X      "],
         ];
     }
 
