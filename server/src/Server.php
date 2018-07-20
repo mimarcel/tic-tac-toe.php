@@ -31,10 +31,10 @@ class Server implements \Ratchet\MessageComponentInterface {
         $this->logger->log("Connection open for client {$connection->resourceId}.");
     }
 
-    public function onMessage(\Ratchet\ConnectionInterface $from, $message)
+    public function onMessage(\Ratchet\ConnectionInterface $connection, $message)
     {
         $message = trim($message);
-        $this->logger->log("Receive message `$message` from client {$from->resourceId}.");
+        $this->logger->log("Receive message `$message` from client {$connection->resourceId}.");
 
         $message = json_decode($message, true);
         $action = $message['action'] ?? self::MESSAGE_ACTION_NEW_NONE;
@@ -42,17 +42,17 @@ class Server implements \Ratchet\MessageComponentInterface {
         try {
             switch ($action) {
                 case self::MESSAGE_ACTION_NEW_GAME:
-                    $game = new \Max\TicTacToe\Server\Game($from->resourceId . '_' . uniqid());
+                    $game = new \Max\TicTacToe\Server\Game($connection->resourceId . '_' . uniqid());
                     $this->games[$game->getId()] = $game;
-                    $game->connectPlayer(new \Max\TicTacToe\Server\Player($from, \Max\TicTacToe\Game\Grid::MARK_X));
+                    $game->connectPlayer(new \Max\TicTacToe\Server\Player($connection, \Max\TicTacToe\Game\Grid::MARK_X));
                     break;
                 case self::MESSAGE_ACTION_CONNECT:
                     $game = $this->_getGame($message);
-                    $game->connectPlayer(new \Max\TicTacToe\Server\Player($from, \Max\TicTacToe\Game\Grid::MARK_0));
+                    $game->connectPlayer(new \Max\TicTacToe\Server\Player($connection, \Max\TicTacToe\Game\Grid::MARK_0));
                     break;
                 case self::MESSAGE_ACTION_MARK:
                     $game = $this->_getGame($message);
-                    $this->_mark($from, $game, $message);
+                    $this->_mark($connection, $game, $message);
                     break;
                 default:
                     throw new \Max\TicTacToe\Server\Exception('Unknown action.');
@@ -77,12 +77,12 @@ class Server implements \Ratchet\MessageComponentInterface {
                 );
             }
         } catch (\Max\TicTacToe\Server\Exception $exception) {
-            $this->_sendMessage($from, ['message' => $exception->getMessage()]);
+            $this->_sendMessage($connection, ['message' => $exception->getMessage()]);
         } catch (\Max\TicTacToe\Exception $exception) {
-            $this->_sendMessage($from, ['message' => $exception->getMessage()]);
+            $this->_sendMessage($connection, ['message' => $exception->getMessage()]);
         } catch (\Exception $exception) {
             $this->logger->log((string)$exception);
-            $this->_sendMessage($from, ['message' => 'An unexpected exception has occurred.']);
+            $this->_sendMessage($connection, ['message' => 'An unexpected exception has occurred.']);
         }
     }
 
@@ -90,12 +90,12 @@ class Server implements \Ratchet\MessageComponentInterface {
     {
         $this->clients->detach($connection);
 
-        echo "Connection {$connection->resourceId} has disconnected\n";
+        $this->logger->log("Client {$connection->resourceId} has disconnected");
     }
 
     public function onError(\Ratchet\ConnectionInterface $connection, \Exception $e)
     {
-        echo "An error has occurred: {$e->getMessage()}\n";
+        $this->logger->log("An error has occurred: {$e->getMessage()}");
 
         $connection->close();
     }

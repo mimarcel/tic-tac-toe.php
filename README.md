@@ -1,6 +1,6 @@
 # tic-tac-toe.php
 
-Tic Tac Toe in PHP.
+Quick implementation of Tic Tac Toe in PHP.
 
 ## Install
 1. Clone this repository
@@ -20,7 +20,6 @@ composer install
 cd /var/www/tic-tac-toe.php/game
 composer test
 ```
-
 
 ## Run
 
