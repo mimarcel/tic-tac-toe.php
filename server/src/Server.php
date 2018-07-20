@@ -92,23 +92,6 @@ class Server implements \Ratchet\MessageComponentInterface {
         $connection->close();
     }
 
-    protected function _log($message)
-    {
-        echo $message . "\n";
-    }
-
-    /**
-     * @param \Ratchet\ConnectionInterface $to
-     * @param $message
-     */
-    protected function _sendMessage($to, $message)
-    {
-        $message = json_encode($message);
-
-        $this->_log("Send message $message to client {$to->resourceId}.");
-        $to->send($message);
-    }
-
     /**
      * @param $message
      *
@@ -124,6 +107,31 @@ class Server implements \Ratchet\MessageComponentInterface {
         } else {
             throw new \Max\TicTacToe\Server\Exception("Unknown game with id `$gameId`.");
         }
+    }
+
+    /**
+     * @param \Max\TicTacToe\Server\Game $game
+     * @param $connection
+     * @param $mark
+     *
+     * @return Server\Player|null
+     */
+    protected function _getPlayer($game, $connection, $mark = null)
+    {
+        foreach ($game->getPlayers() as $player) {
+            if ($player->getConnection() === $connection) {
+                if ($mark === null || $player->getMark() === $mark) {
+                    return $player;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    protected function _log($message)
+    {
+        echo $message . "\n";
     }
 
     /**
@@ -155,22 +163,14 @@ class Server implements \Ratchet\MessageComponentInterface {
     }
 
     /**
-     * @param \Max\TicTacToe\Server\Game $game
-     * @param $connection
-     * @param $mark
-     *
-     * @return Server\Player|null
+     * @param \Ratchet\ConnectionInterface $to
+     * @param $message
      */
-    protected function _getPlayer($game, $connection, $mark = null)
+    protected function _sendMessage($to, $message)
     {
-        foreach ($game->getPlayers() as $player) {
-            if ($player->getConnection() === $connection) {
-                if ($mark === null || $player->getMark() === $mark) {
-                    return $player;
-                }
-            }
-        }
+        $message = json_encode($message);
 
-        return null;
+        $this->_log("Send message $message to client {$to->resourceId}.");
+        $to->send($message);
     }
 }
